@@ -22,6 +22,13 @@ export const registerUser = async (req, res, next) => {
     return next( new ErrorClass("Email already exist", 400,"Email already exist"));
   }
 
+  // check nationalId
+  const isNationalExist = await User.findOne({ nationalId });
+
+  if (isNationalExist) {
+    return next( new ErrorClass("National ID already exist", 400,"National ID already exist"));
+  }
+
   // create User Instance
   const userInstance = new User({
     username,
