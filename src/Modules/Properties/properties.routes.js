@@ -48,6 +48,12 @@ propertyRouter.delete(
   errorHandler(controller.deleteProperty)
 );
 
+propertyRouter.get(
+  "/get-by-category/:categoryId",
+  auth(),
+  errorHandler(controller.getPropertyByCategory)
+);
+
 propertyRouter.post(
   "/:propertyId/add-comment",
   auth(),

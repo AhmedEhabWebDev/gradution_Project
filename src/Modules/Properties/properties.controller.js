@@ -1,6 +1,7 @@
 import { nanoid } from "nanoid";
 // Models
 import { 
+  Category,
   Comment,
   Property, 
   User 
@@ -96,11 +97,6 @@ export const getProperty = async (req, res, next) => {
   const { userId: _id } = req.authUser;
   const { propertyId } = req.params;
   const properties = await Property.findById(propertyId)
-  .populate("category")
-  .populate("subCategory")
-  .populate("addedBy")
-  .lean()
-  .exec();
 
   if (!properties)
     return next(new ErrorClass("Property not found", 404, "Property not found"));
@@ -123,11 +119,6 @@ export const getProperty = async (req, res, next) => {
 
 export const getProperties = async (req, res, next) => {
   const properties = await Property.find()
-  .populate("category")
-  .populate("subCategory")
-  .populate("addedBy")
-  .lean()
-  .exec();
 
   res.status(200).json({
     status: "success",
@@ -218,6 +209,33 @@ export const deleteProperty = async (req, res, next) => {
   res.status(200).json({
     status: "success",
     message: "Property deleted successfully",
+  });
+}
+
+
+export const getPropertyByCategory = async (req, res, next) => {
+  const { _id: userId } = req.authUser;
+  const { categoryId } = req.params;
+
+  // find user
+  const user = await User.findById(userId);
+  // ckeck if user exists
+  if (!user) 
+    return next(new ErrorClass("User not found", 404, "User not found"));
+
+  // find category
+  const category = await Category.findById(categoryId);
+  // ckeck if category exists
+  if (!category) 
+    return next(new ErrorClass("Category not found", 404, "Category not found"));
+
+  // find properties
+  const properties = await Property.find({ category: categoryId })  
+  .populate("category")
+
+  res.status(200).json({
+    status: "success",
+    data: properties,
   });
 }
 
