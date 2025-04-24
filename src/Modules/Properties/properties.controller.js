@@ -212,6 +212,14 @@ export const deleteProperty = async (req, res, next) => {
   });
 }
 
+/**
+* @param {object} req
+* @param {object} res
+* @param {object} next
+* @returns {object} return response { status, message, data }
+* @api {GET} /properties/get-by-category/:categoryId get properties by category
+* @description get properties by category
+*/
 
 export const getPropertyByCategory = async (req, res, next) => {
   const { _id: userId } = req.authUser;
@@ -239,6 +247,45 @@ export const getPropertyByCategory = async (req, res, next) => {
   });
 }
 
+/**
+* @param {object} req
+* @param {object} res
+* @param {object} next
+* @returns {object} return response { status, message, data }
+* @api {GET} /properties/get-by-addedby get properties by addedby
+* @description get properties by added by
+*/
+
+export const getPropertyByAddedBy = async (req, res, next) => {
+  const { _id: userId } = req.authUser;
+
+  // find user
+  const user = await User.findById(userId);
+  // ckeck if user exists
+  if (!user) 
+    return next(new ErrorClass("User not found", 404, "User not found"));
+
+  // find properties
+  const properties = await Property.find({ addedBy: userId })  
+  .populate("addedBy")
+
+  if (properties.length === 0) 
+    return next(new ErrorClass("Properties not found", 404, "Properties not found"));
+
+  res.status(200).json({
+    status: "success",
+    data: properties,
+  })
+}
+
+/**
+* @param {object} req
+* @param {object} res
+* @param {object} next
+* @returns {object} return response { status, message, data }
+* @api {POST} /properties/:propertyId/add-comment
+* @description add a comment to a property
+*/
 
 export const addComment = async (req, res, next) => {
   const { content } = req.body;
@@ -268,6 +315,14 @@ export const addComment = async (req, res, next) => {
   });
 };
 
+/**
+* @param {object} req
+* @param {object} res
+* @param {object} next
+* @returns {object} return response { status, message, data }
+* @api {GET} /properties/:propertyId/comments
+* @description get comments of a property
+*/
 
 export const getComments = async (req, res, next) => {
   const { _id: userId } = req.authUser;
@@ -292,6 +347,15 @@ export const getComments = async (req, res, next) => {
   });
 }
 
+/**
+* @param {object} req
+* @param {object} res
+* @param {object} next
+* @returns {object} return response { status, message, data }
+* @api {DELETE} /properties/:propertyId/comments/:commentId
+* @description delete a comment of a property
+*/
+
 export const deleteComment = async (req, res, next) => {
   const { commentId } = req.params;
   const { _id: userId } = req.authUser;
@@ -311,6 +375,15 @@ export const deleteComment = async (req, res, next) => {
     message: "Comment deleted successfully",
   });
 }
+
+/**
+* @param {object} req
+* @param {object} res
+* @param {object} next
+* @returns {object} return response { status, message, data }
+* @api {PATCH} /properties/:propertyId/comments/:commentId
+* @description update a comment of a property
+*/
 
 export const updateComment = async (req, res, next) => {
   const { content } = req.body;

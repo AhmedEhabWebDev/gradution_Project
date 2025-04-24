@@ -54,6 +54,12 @@ propertyRouter.get(
   errorHandler(controller.getPropertyByCategory)
 );
 
+propertyRouter.get(
+  "/get-by-addedby",
+  auth(),
+  errorHandler(controller.getPropertyByAddedBy)
+);
+
 propertyRouter.post(
   "/:propertyId/add-comment",
   auth(),
