@@ -171,3 +171,16 @@ export const deleteUser = async (req, res, next) => {
     message: "User deleted successfully",
   });
 }
+
+export const getMe = async (req, res, next) => {
+  const { _id } = req.authUser;
+  const user = await User.findById(_id).select("-password");
+  if (!user) {
+    return next(new ErrorClass("User not found", 404, "User not found"));
+  }
+  res.status(200).json({
+    status: "success",
+    message: "User fetched successfully",
+    data: user,
+  });
+};

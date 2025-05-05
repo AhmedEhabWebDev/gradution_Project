@@ -15,6 +15,8 @@ const {
   multerHost
  } = Middlewares;
 
+// Properties Routes
+
 propertyRouter.post(
   "/add",
   multerHost({ allowedExtensions: extensions.Images }).array("images", 5),
@@ -30,17 +32,6 @@ propertyRouter.put(
   errorHandler(controller.updateProperty)
 );
 
-propertyRouter.get(
-  "/get/:propertyId",
-  auth(),
-  errorHandler(controller.getProperty)
-);
-
-propertyRouter.get(
-  "/get-all",
-  errorHandler(controller.getProperties)
-);
-
 propertyRouter.delete(
   "/delete/:propertyId",
   auth(),
@@ -49,16 +40,18 @@ propertyRouter.delete(
 );
 
 propertyRouter.get(
-  "/get-by-category/:categoryId",
+  "/list",
   auth(),
-  errorHandler(controller.getPropertyByCategory)
+  errorHandler(controller.propertyList)
 );
 
 propertyRouter.get(
-  "/get-by-addedby",
+  "/my-properties",
   auth(),
-  errorHandler(controller.getPropertyByAddedBy)
+  errorHandler(controller.myProperties)
 );
+
+// Comments Routes
 
 propertyRouter.post(
   "/:propertyId/add-comment",

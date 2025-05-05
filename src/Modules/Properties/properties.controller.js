@@ -89,20 +89,31 @@ export const addProperty = async (req, res, next) => {
 * @param {object} res
 * @param {object} next
 * @returns {object} return response { status, message, data }
-* @api {GET} /properties/get/:propertyId get a property
-* @description get a property
+* @api {GET} /properties/get get properties
+* @description get properties
 */
 
-export const getProperty = async (req, res, next) => {
-  const { userId: _id } = req.authUser;
-  const { propertyId } = req.params;
-  const properties = await Property.findById(propertyId)
+export const propertyList = async (req, res, next) => {
+  const { _id: userId } = req.authUser;
+  const { category, _id, purpose } = req.query;
 
-  if (!properties)
-    return next(new ErrorClass("Property not found", 404, "Property not found"));
+  // find user
+  const user = await User.findById(userId);
+
+  // ckeck if user exists
+  if (!user)
+    return next(new ErrorClass("User not found", 404, "User not found"));
+
+  let filter = {};
+  if (category) filter.category = category;
+  if (_id) filter._id = _id;
+  if (purpose) filter.purpose = purpose;
+
+  const properties = await Property.find(filter)
 
   res.status(200).json({
     status: "success",
+    message: "Properties fetched successfully",
     data: properties,
   });
 }
@@ -113,19 +124,30 @@ export const getProperty = async (req, res, next) => {
 * @param {object} res
 * @param {object} next
 * @returns {object} return response { status, message, data }
-* @api {GET} /properties/get-all get all properties
-* @description get all properties
+* @api {GET} /properties/my-properties get my properties
+* @description get my properties
 */
+export const myProperties = async (req, res, next) => {
+  const { _id: userId } = req.authUser;
 
-export const getProperties = async (req, res, next) => {
-  const properties = await Property.find()
+  // find user
+  const user = await User.findById(userId);
+  // ckeck if user exists
+  if (!user)
+    return next(new ErrorClass("User not found", 404, "User not found"));
+
+  // find properties
+  const properties = await Property.find({ addedBy: userId });
+  // ckeck if properties exists
+  if (!properties.length)
+    return next(new ErrorClass("No properties found", 404, "No properties found"));
 
   res.status(200).json({
     status: "success",
+    message: "Properties fetched successfully",
     data: properties,
   });
 }
-
 
 /**
 * @param {object} req
@@ -212,71 +234,6 @@ export const deleteProperty = async (req, res, next) => {
   });
 }
 
-/**
-* @param {object} req
-* @param {object} res
-* @param {object} next
-* @returns {object} return response { status, message, data }
-* @api {GET} /properties/get-by-category/:categoryId get properties by category
-* @description get properties by category
-*/
-
-export const getPropertyByCategory = async (req, res, next) => {
-  const { _id: userId } = req.authUser;
-  const { categoryId } = req.params;
-
-  // find user
-  const user = await User.findById(userId);
-  // ckeck if user exists
-  if (!user) 
-    return next(new ErrorClass("User not found", 404, "User not found"));
-
-  // find category
-  const category = await Category.findById(categoryId);
-  // ckeck if category exists
-  if (!category) 
-    return next(new ErrorClass("Category not found", 404, "Category not found"));
-
-  // find properties
-  const properties = await Property.find({ category: categoryId })  
-  .populate("category")
-
-  res.status(200).json({
-    status: "success",
-    data: properties,
-  });
-}
-
-/**
-* @param {object} req
-* @param {object} res
-* @param {object} next
-* @returns {object} return response { status, message, data }
-* @api {GET} /properties/get-by-addedby get properties by addedby
-* @description get properties by added by
-*/
-
-export const getPropertyByAddedBy = async (req, res, next) => {
-  const { _id: userId } = req.authUser;
-
-  // find user
-  const user = await User.findById(userId);
-  // ckeck if user exists
-  if (!user) 
-    return next(new ErrorClass("User not found", 404, "User not found"));
-
-  // find properties
-  const properties = await Property.find({ addedBy: userId })  
-  .populate("addedBy")
-
-  if (properties.length === 0) 
-    return next(new ErrorClass("Properties not found", 404, "Properties not found"));
-
-  res.status(200).json({
-    status: "success",
-    data: properties,
-  })
-}
 
 /**
 * @param {object} req

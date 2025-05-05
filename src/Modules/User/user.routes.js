@@ -16,4 +16,6 @@ userRouter.put("/update", auth(), errorHandler(controller.updateUser));
 userRouter.patch("/updatePassword", auth(), errorHandler(controller.updatePassword))
 
 userRouter.delete("/delete/:_id", auth(), authorization(["Admin"]), errorHandler(controller.deleteUser));
+
+userRouter.get("/me", auth(), errorHandler(controller.getMe));
 export { userRouter };
