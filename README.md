@@ -10,9 +10,3 @@ MongoDB + Mongoose
 dotenv
 Cloudinary API (for image uploads)
 RESTful API architecture
-
-## 📁 Project Structure
-
---
-git comet
---
