@@ -14,14 +14,5 @@ RESTful API architecture
 ## 📁 Project Structure
 
 --
-.
-├── DB/
-│   └── connection.js         # Database connection
-├── src/
-│   ├── Middlewares/          # Global middleware handlers
-│   ├── Modules/              # API route modules
-│   └── ...                   # Other related logic
-├── .env                      # Environment variables
-├── .gitignore
-├── index.js                  # App entry point
+git comet
 --
