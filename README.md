@@ -24,5 +24,4 @@ RESTful API architecture
 ├── .env                      # Environment variables
 ├── .gitignore
 ├── index.js                  # App entry point
-
 --
