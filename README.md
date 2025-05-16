@@ -5,8 +5,13 @@ Smart Dar is a backend system for a smart real estate platform designed to manag
 ## 🧰 Technologies Used
 
 Node.js
+
 Express.js
+
 MongoDB + Mongoose
+
 dotenv
+
 Cloudinary API (for image uploads)
+
 RESTful API architecture
