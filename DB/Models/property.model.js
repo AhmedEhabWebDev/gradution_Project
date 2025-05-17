@@ -84,11 +84,19 @@ const propertySchema = new Schema(
       ref: "User",
       required: true,
     },
+    latitude: Number,
+    longitude: Number,
+    isApproved: {
+      type: Boolean,
+      default: false
+    }
   },
   {
     timestamps: true,
   }
 );
+
+propertySchema.index({ location: "2dsphere" });
 
 export const Property = 
   mongoose.models.Property || model("Property", propertySchema);

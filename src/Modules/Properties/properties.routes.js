@@ -40,6 +40,20 @@ propertyRouter.delete(
 );
 
 propertyRouter.get(
+  "/get-notApproved-properties",
+  auth(),
+  authorization(["Admin"]),
+  errorHandler(controller.notApprovedProperties)
+)
+
+propertyRouter.patch(
+  "/approve/:propertyId",
+  auth(),
+  authorization(["Admin"]),
+  errorHandler(controller.approvedProperty)
+)
+
+propertyRouter.get(
   "/list",
   auth(),
   errorHandler(controller.propertyList)
