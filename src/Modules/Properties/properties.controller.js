@@ -25,7 +25,7 @@ import {
 
 export const addProperty = async (req, res, next) => {
   // destructuring the request body
-  const { title, description, price, location, rooms, bathrooms, area, status, purpose, availabFrom, latitude, longitude } = req.body;
+  const { title, description, price, location, rooms, bathrooms, area, status, purpose, availabFrom, mapLink } = req.body;
   const { _id: userId } = req.authUser;
   const { categoryId, subCategoryId } = req.query;
 
@@ -72,8 +72,7 @@ export const addProperty = async (req, res, next) => {
     category: categoryId,
     subCategory: subCategoryId,
     addedBy: userId,
-    latitude,
-    longitude
+    mapLink
   };
 
   const property = await Property.create(propertyObject);
@@ -97,7 +96,7 @@ export const addProperty = async (req, res, next) => {
 
 export const propertyList = async (req, res, next) => {
   const { _id: userId } = req.authUser;
-  const { category, _id, purpose, latitude, longitude, location } = req.query;
+  const { category, _id, purpose, mapLink, location } = req.query;
 
   // find user
   const user = await User.findById(userId);
@@ -110,11 +109,38 @@ export const propertyList = async (req, res, next) => {
   if (category) filter.category = category;
   if (_id) filter._id = _id;
   if (purpose) filter.purpose = purpose;
-  if (latitude) filter.latitude = latitude;
-  if (longitude) filter.longitude = longitude;
+  if (mapLink) filter.mapLink = mapLink;
   if (location) filter.location = location;
 
-  const properties = await Property.find({ ...filter, isApproved: true});
+  const properties = await Property.find({ ...filter, isApproved: true})
+  .populate("addedBy", "_id username email")
+  .populate("category", "_id name slug")
+  .populate("subCategory", "_id name slug");
+
+  res.status(200).json({
+    status: "success",
+    message: "Properties fetched successfully",
+    data: properties,
+  });
+}
+
+export const getAllProperties = async (req, res, next) => {
+  const { _id: userId } = req.authUser;
+
+  // find user
+  const user = await User.findById(userId);
+  // ckeck if user exists
+  if (!user)
+    return next(new ErrorClass("User not found", 404, "User not found"));
+
+  // find properties
+  const properties = await Property.find()
+  .populate("addedBy", "_id username email")
+  .populate("category", "_id name slug")
+  .populate("subCategory", "_id name slug");
+  // ckeck if properties exists
+  if (!properties)
+    return next(new ErrorClass("No properties found", 404, "No properties found"));
 
   res.status(200).json({
     status: "success",
@@ -134,7 +160,10 @@ export const notApprovedProperties = async (req, res, next) => {
     return next(new ErrorClass("User not found", 404, "User not found"));
 
   // find properties
-  const properties = await Property.find({ isApproved: false }).populate("addedBy", "username email");
+  const properties = await Property.find({ isApproved: false })
+  .populate("addedBy", "_id username email")
+  .populate("category", "_id name slug")
+  .populate("subCategory", "_id name slug");
   // ckeck if properties exists
   if (!properties.length)
     return next(new ErrorClass("No properties found", 404, "No properties found"));

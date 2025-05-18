@@ -60,6 +60,13 @@ propertyRouter.get(
 );
 
 propertyRouter.get(
+  "/get-all-for-admin",
+  auth(),
+  authorization(["Admin"]),
+  errorHandler(controller.getAllProperties)
+);
+
+propertyRouter.get(
   "/my-properties",
   auth(),
   errorHandler(controller.myProperties)

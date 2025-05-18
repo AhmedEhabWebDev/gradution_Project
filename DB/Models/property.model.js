@@ -84,8 +84,10 @@ const propertySchema = new Schema(
       ref: "User",
       required: true,
     },
-    latitude: Number,
-    longitude: Number,
+    mapLink: {
+      type: String,
+      required: true,
+    },
     isApproved: {
       type: Boolean,
       default: false
