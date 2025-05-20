@@ -112,7 +112,7 @@ export const propertyList = async (req, res, next) => {
   if (mapLink) filter.mapLink = mapLink;
   if (location) filter.location = location;
 
-  const properties = await Property.find({ ...filter, isApproved: true})
+  const properties = await Property.find({...filter})
   .populate("addedBy", "_id username email")
   .populate("category", "_id name slug")
   .populate("subCategory", "_id name slug");
