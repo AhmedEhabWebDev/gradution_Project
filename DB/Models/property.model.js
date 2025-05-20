@@ -84,10 +84,7 @@ const propertySchema = new Schema(
       ref: "User",
       required: true,
     },
-    mapLink: {
-      type: String,
-      required: true,
-    },
+    mapLink: String,
     isApproved: {
       type: Boolean,
       default: false
