@@ -1,6 +1,5 @@
 import { hashSync } from "bcrypt";
 import mongoose from "../global-setup.js";
-import { Gender, UserType } from "../../src/Utils/index.js";
 
 const { Schema, model } = mongoose;
 
@@ -27,7 +26,7 @@ const userSchema = new Schema(
     },
     userType: {
       type: String,
-      enum: Object.values(UserType),
+      enum: ["admin", "doctor", "patient"],
     },
     age : {
       type: Number,
@@ -35,7 +34,7 @@ const userSchema = new Schema(
     },
     gender : {
       type: String,
-      enum: Object.values(Gender)
+      enum: ["male", "female"],
     },
     phone: {
       type: String,

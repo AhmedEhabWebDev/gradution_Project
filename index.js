@@ -14,11 +14,8 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-app.use("/users", router.userRouter);
-app.use("/categories", router.categoryRouter);
-app.use("/sub-categories", router.subCategoryRouter)
-app.use("/properties", router.propertyRouter);
-app.use("/cart", router.cartRouter);
+app.use("/api/users", router.userRouter);
+app.use("/api/patients", router.patientRouter);
 
 app.use("*", (req, res,next) => 
   res.status(404).json({massage:"Route Not Found"})
