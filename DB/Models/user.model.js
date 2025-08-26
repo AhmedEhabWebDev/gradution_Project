@@ -24,10 +24,6 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    userType: {
-      type: String,
-      enum: ["admin", "doctor", "patient"],
-    },
     age : {
       type: Number,
       required: true
@@ -37,10 +33,6 @@ const userSchema = new Schema(
       enum: ["male", "female"],
     },
     phone: {
-      type: String,
-      required: true
-    },
-    address: {
       type: String,
       required: true
     },

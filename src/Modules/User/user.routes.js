@@ -5,19 +5,16 @@ import * as controller from "./user.controller.js";
 import * as Middlewares from "../../Middlewares/index.js";
 
 const userRouter = Router();
-const { errorHandler, auth, authorization } = Middlewares;
+const { errorHandler } = Middlewares;
 
 userRouter.post("/register", errorHandler(controller.registerUser));
 
 userRouter.post("/signin", errorHandler(controller.signIn));
 
-userRouter.put("/update", auth(), errorHandler(controller.updateUser));
+userRouter.put("/update/:_id", errorHandler(controller.updateUser));
 
-userRouter.patch("/updatePassword", auth(), errorHandler(controller.updatePassword))
+userRouter.patch("/updatePassword/:_id", errorHandler(controller.updatePassword))
 
-userRouter.delete("/delete/:_id", auth(), authorization(["Admin"]), errorHandler(controller.deleteUser));
+userRouter.delete("/delete/:_id", errorHandler(controller.deleteUser));
 
-userRouter.get("/me", auth(), errorHandler(controller.getMe));
-
-userRouter.post("/logout", auth(), errorHandler(controller.logout));
 export { userRouter };

@@ -13,7 +13,7 @@ import { ErrorClass } from "../../Utils/index.js";
  */
 
 export const registerUser = async (req, res, next) => {
-  const { username, nationalId, email, password, gender, age, phone, userType, address } = req.body;
+  const { username, nationalId, email, password, gender, age, phone } = req.body;
 
   // check email
   const isEmailExist = await User.findOne({ email });
@@ -37,14 +37,12 @@ export const registerUser = async (req, res, next) => {
     password,
     gender,
     age,
-    phone,
-    userType,
-    address
+    phone
   })
 
 
   // creat user in db
-  const newUser = await userInstance.save();
+  await userInstance.save();
 
 
   res.status(201).json({
@@ -94,9 +92,8 @@ export const signIn = async (req, res, next) => {
  */
 
 export const updateUser = async (req, res, next) => {
-  console.log( "req.authUser", req.authUser);
   
-  const { _id } = req.authUser;
+  const { _id } = req.params;
   const { username, email } = req.body;
 
 // find User by id
@@ -133,7 +130,7 @@ export const updateUser = async (req, res, next) => {
 
 
 export const updatePassword = async (req, res, next) => {
-  const { _id } = req.authUser;
+  const { _id } = req.params;
   const { password } = req.body;
 
   // find User by id
@@ -169,26 +166,5 @@ export const deleteUser = async (req, res, next) => {
   res.status(200).json({
     status: "success",
     message: "User deleted successfully",
-  });
-}
-
-export const getMe = async (req, res, next) => {
-  const { _id } = req.authUser;
-  const user = await User.findById(_id).select("-password");
-  if (!user) {
-    return next(new ErrorClass("User not found", 404, "User not found"));
-  }
-  res.status(200).json({
-    status: "success",
-    message: "User fetched successfully",
-    data: user,
-  });
-};
-
-export const logout = async (req, res, next) => {
-  
-  res.status(200).json({
-    status: "success",
-    message: "User logged out successfully",
   });
 }

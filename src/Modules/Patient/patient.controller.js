@@ -121,7 +121,7 @@ export const createFile = async (req, res, next) => {
     doc.text(`Address: ${patient.address}`);
     doc.text(`Diagnosis: ${patient.diagnosis}`);
     doc.text(`Entry Date: ${patient.entryDate}`);
-    doc.text(`Case Description: ${patient.caseDescription}`);
+    doc.text(`Case Description: ${patient.CaseDescription}`);
     doc.text(`Chronic Diseases: ${patient.chronicDiseases}`);
     doc.moveDown();
     doc.fontSize(20).text('Doctor Information', { underline: true });
