@@ -79,7 +79,8 @@ const patientSchema = new Schema(
     entryDate: {
       type: Date,
       default: Date.now
-    }
+    },
+    treatments: String
   },
   {
     timestamps: true,

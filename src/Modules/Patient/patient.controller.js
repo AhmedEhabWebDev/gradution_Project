@@ -30,7 +30,8 @@ export const addPatient = async (req, res, next) => {
     needsSurgery,
     doctorName,
     doctorSpecialization,
-    entryDate
+    entryDate,
+    treatments
   } = req.body;
 
     const patient = await Patient.findOne({nationalId});
@@ -61,7 +62,8 @@ export const addPatient = async (req, res, next) => {
           specialization: doctorSpecialization,
         },
       ],
-      entryDate
+      entryDate,
+      treatments
     });
 
     await newPatient.save();
@@ -72,6 +74,14 @@ export const addPatient = async (req, res, next) => {
       data: newPatient,
     });
 }
+
+/**
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} return response { status, message, data }
+ * @api {POST} /api/patients/createFile Create File for patient
+ * @description Create File for patient
+ */
 
 export const createFile = async (req, res, next) => {
   const { _id } = req.params;
@@ -123,6 +133,14 @@ export const createFile = async (req, res, next) => {
 
 }
 
+/**
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} return PDF File
+ * @api {GET} /api/patients/file Get File for patient
+ * @description Get File for patient
+ */
+
 export const getPatientPdf = async (req, res, next) => {
   const { _id } = req.params;
 
@@ -140,6 +158,14 @@ export const getPatientPdf = async (req, res, next) => {
     res.send(patient.pdfFile);
 };
 
+/**
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} return response { status, message, data }
+ * @api {GET} /api/patients/      GET all patients
+ * @description Get all patients
+ */
+
 export const getAllPatients = async (req, res, next) => {
   const { sort } = req.query;
   const patients = await Patient.find().sort({ [sort]: 1 }).select("-pdfFile");
@@ -151,6 +177,14 @@ export const getAllPatients = async (req, res, next) => {
     data: patients,
   });
 }
+
+/**
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} return response { status, message, data }
+ * @api {GET} /api/patients/getById/:_id Get patient by id
+ * @description Get patient by id
+ */
 
 export const getPatientById = async (req, res, next) => {
   const { _id } = req.params;
@@ -164,6 +198,14 @@ export const getPatientById = async (req, res, next) => {
     data: patient,
   });
 }
+
+/**
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} return response { status, message, data }
+ * @api {GET} /api/patients/getFilteredPatients Get filtered patients
+ * @description Get filtered patients
+ */
 
 export const getFilteredPatients = async (req, res, next) => {
   const { username, entryDate, doctorName, specializedMedicalDepartment } = req.query;
@@ -187,6 +229,14 @@ export const getFilteredPatients = async (req, res, next) => {
     data: patients,
   });
 }
+
+/**
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} return response { status, message, data }
+ * @api {PUT} /api/patients/update/:_id Update patient
+ * @description Update patient
+ */
 
 export const updatePatient = async (req, res, next) => {
   const { _id } = req.params;
@@ -243,6 +293,14 @@ export const updatePatient = async (req, res, next) => {
     data: patient,
   });
 }
+
+/**
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} return response { status, message, data }
+ * @api {DELETE} /api/patients/delete/:_id Delete patient
+ * @description Delete patient
+ */
 
 export const deletePatient = async (req, res, next) => {
   const { _id } = req.params;
