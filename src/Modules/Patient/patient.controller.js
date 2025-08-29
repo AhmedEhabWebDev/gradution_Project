@@ -12,7 +12,7 @@ import PDFDocument from 'pdfkit';
  */
 
 export const addPatient = async (req, res, next) => {
-  const { 
+  const {
     username,
     nationalId,
     age ,
@@ -34,13 +34,20 @@ export const addPatient = async (req, res, next) => {
     treatments
   } = req.body;
 
-    const patient = await Patient.findOne({nationalId});
+    const patient = await Patient.findOne({ nationalId });
 
     if (patient) {
-      return next(new ErrorClass("Patient already exist", 400, "Patient already exist"));
+      return next(new ErrorClass("Patient already exists", 400, "Patient already exists"));
     }
 
-    const newPatient = new Patient({
+    const doc = new PDFDocument();
+    let buffers = [];
+    
+    doc.on('data', buffers.push.bind(buffers));
+    doc.on('end', async () => {
+      const pdfBuffer = Buffer.concat(buffers);
+
+      const newPatient = new Patient({
       username,
       nationalId,
       age ,
@@ -63,75 +70,39 @@ export const addPatient = async (req, res, next) => {
         },
       ],
       entryDate,
-      treatments
-    });
+      treatments,
+      pdfFile: pdfBuffer
+      });
 
-    await newPatient.save();
-
-    res.status(200).json({
-      status: "success",
-      message: "Patient added successfully",
-      data: newPatient,
-    });
-}
-
-/**
- * @param {object} req
- * @param {object} res
- * @returns {object} return response { status, message, data }
- * @api {POST} /api/patients/createFile Create File for patient
- * @description Create File for patient
- */
-
-export const createFile = async (req, res, next) => {
-  const { _id } = req.params;
-
-  const patient = await Patient.findById(_id);
-
-  if (!patient) {
-    return next(new ErrorClass("Patient not found", 404, "Patient not found"));
-  }
-
-   const doc = new PDFDocument();
-    let buffers = [];
-    
-    doc.on('data', buffers.push.bind(buffers));
-    doc.on('end', async () => {
-      const pdfBuffer = Buffer.concat(buffers);
-
-      patient.pdfFile = pdfBuffer;
-      await patient.save();
+      await newPatient.save();
 
       res.status(200).json({
         status: "success",
-        message: "PDF stored in DB",
-        data: patient,
+        message: "Patient added successfully, PDF stored in DB",
+        data: newPatient,
       });
     });
 
-    // محتوى الـ PDF
     doc.fontSize(20).text('Patient Information', { underline: true });
     doc.moveDown();
     doc.fontSize(14);
-    doc.text(`Username: ${patient.username}`);
-    doc.text(`National ID: ${patient.nationalId}`);
-    doc.text(`Gender: ${patient.gender}`);
-    doc.text(`Age: ${patient.age}`);
-    doc.text(`Phone: ${patient.phone}`);
-    doc.text(`Address: ${patient.address}`);
-    doc.text(`Diagnosis: ${patient.diagnosis}`);
-    doc.text(`Entry Date: ${patient.entryDate}`);
-    doc.text(`Case Description: ${patient.CaseDescription}`);
-    doc.text(`Chronic Diseases: ${patient.chronicDiseases}`);
+    doc.text(`Username: ${username}`);
+    doc.text(`Age: ${age}`);
+    doc.text(`Phone: ${phone}`);
+    doc.text(`Address: ${address}`);
+    doc.text(`Diagnosis: ${diagnosis}`);
+    doc.text(`Chronic Diseases: ${chronicDiseases}`);
+    doc.text(`Entry Date: ${patient?.entryDate}`);
     doc.moveDown();
-    doc.fontSize(20).text('Doctor Information', { underline: true });
+    doc.fontSize(20).text('Medical Information', { underline: true });
+    doc.moveDown();
     doc.fontSize(14);
-    doc.text(`Doctor Name: ${patient.doctor[0].name}`);
-    doc.text(`Specialization: ${patient.doctor[0].specialization}`);
+    doc.text(`Doctor Name: ${doctorName}`);
+    doc.text(`Specialization: ${doctorSpecialization}`);
 
     doc.end();
 
-}
+};
 
 /**
  * @param {object} req

@@ -9,8 +9,6 @@ const { errorHandler } = Middlewares;
 
 patientRouter.post("/addPatient", errorHandler(controller.addPatient));
 
-patientRouter.post("/createFile/:_id", errorHandler(controller.createFile));
-
 patientRouter.get('/file/:_id', errorHandler(controller.getPatientPdf));
 
 patientRouter.get("/", errorHandler(controller.getAllPatients));
