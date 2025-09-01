@@ -76,7 +76,7 @@ export const addPatient = async (req, res, next) => {
 
       await newPatient.save();
 
-      res.status(200).json({
+      res.status(201).json({
         status: "success",
         message: "Patient added successfully, PDF stored in DB",
         data: newPatient,

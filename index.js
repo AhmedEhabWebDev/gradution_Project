@@ -17,6 +17,7 @@ app.use(express.json());
 app.use("/api/users", router.userRouter);
 app.use("/api/patients", router.patientRouter);
 app.use("/api/referrals", router.referralRouter);
+app.use("/api/doctors", router.doctorRouter);
 
 app.use("*", (req, res,next) => 
   res.status(404).json({massage:"Route Not Found"})
